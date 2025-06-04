@@ -1,0 +1,62 @@
+
+/build*/          # Папки сборки CMake (build, build-debug и т.д.)
+/out/             # Альтернативная папка для выходных файлов
+/bin/             # Исполняемые файлы (если они в отдельной папке)
+/lib/             # Библиотеки (.a, .so, .dll)
+*.exe             # Windows-исполняемые файлы
+*.out             # Linux-исполняемые файлы
+*.a               # Статические библиотеки
+*.so              # Динамические библиотеки (Linux)
+*.dll             # Динамические библиотеки (Windows)
+*.lib             # Библиотеки (Windows)
+
+# --- Кэш и временные файлы ---
+.cache/
+*.tmp
+*.swp
+*~
+*.user
+
+# --- Логи и дампы ---
+*.log
+*.dmp
+
+# --- IDE/Редакторы ---
+# CLion
+.idea/
+cmake-build-*/
+*.iml
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.vcxproj*
+*.sln
+*.suo
+*.filters
+x64/
+x86/
+Debug/
+Release/
+
+# --- CMake ---
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+Testing/
+
+# --- Автогенерируемые файлы ---
+*.autogen
+*.moc
+*.qrc.depends
+
+# --- Системные файлы ---
+.DS_Store        # macOS
+Thumbs.db        # Windows
