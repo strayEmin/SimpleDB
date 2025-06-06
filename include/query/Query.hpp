@@ -1,5 +1,8 @@
+#pragma once
+
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "../utils/Condition.hpp"
 
@@ -17,3 +20,5 @@ class Query {
     std::string getTableName();
     std::vector<Condition> getConditions();
 };
+
+void PrintOK();

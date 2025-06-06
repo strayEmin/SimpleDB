@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Query.hpp"
 
 class QueryParser {

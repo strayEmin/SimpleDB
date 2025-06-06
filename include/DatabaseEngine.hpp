@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <unordered_map>
 
@@ -16,3 +18,6 @@ class DatabaseEngine {
     void dropDatabase(std::string db_name);
     QueryResult executeQuery(Query query);
 };
+
+
+void OK();
