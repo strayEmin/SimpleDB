@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include <string>
 
 #include "../storage/Record.hpp"
@@ -7,9 +8,13 @@
 class Condition {
    private:
     std::string field_name;
-    std::string op;
+    bool (*operation)(std::string, std::string);
     std::string value;
 
    public:
-    void evaluate(Record record);
+    Condition(std::string field_name,
+              bool (*operation)(std::string, std::string), std::string value)
+        : field_name(field_name), operation(operation), value(value) {}
+
+    bool evaluate(Record& record);
 };
