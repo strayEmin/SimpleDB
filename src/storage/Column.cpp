@@ -1,7 +1,7 @@
 #include "storage/Column.hpp"
 
-std::string Column::getName() { return name; }
+std::string Column::getName() const { return name_; }
 
-std::string Column::getType() { return type; }
+std::string Column::getType() const { return type_; }
 
-bool Column::isPK() { return is_primary_key; }
+bool Column::isPK() const { return is_primary_key_; }
