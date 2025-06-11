@@ -1,8 +1,16 @@
 #pragma once
 
+#include <ctime>
+#include <fstream>
+#include <iomanip>
 #include <string>
 
 class Logger {
+   private:
+    std::string filename_;
+
    public:
-    static void makeEntry(std::string message);
+    Logger(std::string logfilename) : filename_(logfilename) {}
+
+    void makeEntry(std::string message);
 };
