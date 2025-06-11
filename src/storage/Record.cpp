@@ -12,8 +12,13 @@ std::string Record::getValue(std::string field_name) {
     return fields_[field_name];
 }
 
-std::vector<std::string> Record::getFields() {
-    std::vector<std::string> for (auto &kv : field_) {}
+std::unordered_set<std::string> Record::getFields() {
+    std::unordered_set<std::string> result;
+    for (auto &kv : fields_) {
+        result.insert(kv.first);
+    }
+
+    return result;
 }
 
 bool Record::matchesConditions(std::string field_name, std::string value) {
