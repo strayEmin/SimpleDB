@@ -6,12 +6,16 @@
 
 #include "DatabaseEngine.hpp"
 #include "storage/Column.hpp"
+#include "storage/Database.hpp"
 #include "utils/Logger.hpp"
 
 int main() {
-    Logger l("/home/bungo/reposes/C2/CourseWorks/OOP/database/db.log");
-    for (int i = 0; i < 10; i++) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        l.makeEntry("All right");
-    }
+    Database d("main");
+    d.loadFromFile("testbd/in.json");
+
+    d.saveToFile("testbd/out.json");
+
+    d.loadFromFile("testbd/out.json");
+
+    // ошибок не обнаружено
 }
