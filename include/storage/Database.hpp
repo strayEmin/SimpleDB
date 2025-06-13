@@ -37,7 +37,7 @@ class Database {
 
     std::vector<std::shared_ptr<const Table>> getTables() const;
 
-    void saveToFile(const std::string& filename);
+    void saveToFile(const std::string& filename) const;
 
     void loadFromFile(const std::string& filename);
 };

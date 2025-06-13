@@ -49,7 +49,7 @@ std::vector<std::shared_ptr<const Table>> Database::getTables() const {
     return result;
 }
 
-void Database::saveToFile(const std::string& filename) {
+void Database::saveToFile(const std::string& filename) const {
     json j;
     std::ofstream f;
     f.open(filename);
@@ -80,4 +80,100 @@ void Database::saveToFile(const std::string& filename) {
     }
 
     f << j.dump(4);
+    f.close();
+}
+
+/*
+structure of .json:
+{
+    "name": <name_of_database: string>,
+    "tables": [
+        {
+            "name": <name_of_table_1: string>,
+            "columns": [
+                {
+                    "is_primary_key": <column_1_is_PK: bool>,
+                    "name": <column_1_name: string>,
+                    "type": <column_1_type: string>
+                },
+                {
+                    "is_primary_key": <column_2_is_PK: bool>,
+                    "name": <column_2_name: string>,
+                    "type": <column_2_type: string>
+                }
+            ],
+            "records": [
+                {
+                    <record_1_field_1_name: string> :
+<record_1_value_at_field_1>, <record_1_field_2_name: string> :
+<record_1_value_at_field_2>
+                },
+                {
+                    <record_2_field_1_name: string> :
+<record_2_value_at_field_1>, <record_2_field_2_name: string> :
+<record_2_value_at_field_2>
+                }
+            ]
+        },
+        {
+            "name": <name_of_table_2: string>,
+            "columns": [
+                {
+                    "is_primary_key": <column_1_is_PK: bool>,
+                    "name": <column_1_name: string>,
+                    "type": <column_1_type: string>
+                },
+                {
+                    "is_primary_key": <column_2_is_PK: bool>,
+                    "name": <column_2_name: string>,
+                    "type": <column_2_type: string>
+                }
+            ],
+            "records": [
+                {
+                    <record_1_field_1_name: string> :
+<record_1_value_at_field_1>, <record_1_field_2_name: string> :
+<record_1_value_at_field_2>
+                },
+                {
+                    <record_2_field_1_name: string> :
+<record_2_value_at_field_1>, <record_2_field_2_name: string> :
+<record_2_value_at_field_2>
+                }
+            ]
+        }
+    ]
+}
+*/
+
+void Database::loadFromFile(const std::string& filename) {
+    std::ifstream f(filename);
+    json j = json::parse(f);
+    f.close();
+
+    try {
+        name_ = j.at("name");
+    } catch (std::out_of_range) {
+        throw std::out_of_range("File '" + filename +
+                                "' does not contain field 'name'");
+    }
+
+    for (auto& jtable : j.at("tables")) {
+        std::vector<Column> columns;
+        for (auto& jcolumn : jtable.at("columns")) {
+            columns.push_back(Column(jcolumn.at("name"), jcolumn.at("type"),
+                                     jcolumn.at("is_primary_key")));
+        }
+
+        Table table(jtable.at("name"), columns);
+        for (auto& jrecord : jtable.at("records")) {
+            Record record;
+            for (auto& column : columns) {
+                record.setField(column.getName(), jrecord.at(column.getName()));
+            }
+            table.insertRecord(record);
+        }
+
+        createTable(table);
+    }
 }
