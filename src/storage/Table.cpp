@@ -1,5 +1,13 @@
 #include "storage/Table.hpp"
 
+std::string Table::getName() const { return name_; }
+
+void Table::changeName(const std::string &new_name) { name_ = new_name; }
+
+std::vector<Column> Table::getColumns() const { return columns_; }
+
+std::vector<Record> Table::getRecords() const { return records_; }
+
 std::string Table::getPrimaryKeyColumnName() const {
     if (not hasPK_) {
         throw std::runtime_error("Primary key column not found");
@@ -28,7 +36,7 @@ Table::Table(std::string name, std::vector<Column> columns) : name_(name) {
 }
 
 void Table::insertRecord(const Record record) {
-    std::unordered_set<std::string> field_names = record.getFields();
+    std::unordered_set<std::string> field_names = record.getFieldNames();
 
     for (auto &fn : field_names) {
         if (not column_names_.contains(fn)) {

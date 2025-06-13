@@ -13,12 +13,19 @@ class Table {
     std::string name_;
     std::vector<Column> columns_;
     std::vector<Record> records_;
-
     std::unordered_set<std::string> column_names_;
-    bool hasPK_;
+    bool hasPK_ = false;
 
    public:
     Table(std::string name, std::vector<Column> columns);
+
+    std::string getName() const;
+
+    void changeName(const std::string& new_name);
+
+    std::vector<Column> getColumns() const;
+
+    std::vector<Record> getRecords() const;
 
     std::string getPrimaryKeyColumnName() const;
 
