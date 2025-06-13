@@ -25,13 +25,17 @@ std::string Record::getValue(std::string field_name) const {
     }
 }
 
-std::unordered_set<std::string> Record::getFields() const {
+std::unordered_set<std::string> Record::getFieldNames() const {
     std::unordered_set<std::string> result;
     for (auto &kv : fields_) {
         result.insert(kv.first);
     }
 
     return result;
+}
+
+std::unordered_map<std::string, std::string> Record::getFields() const {
+    return fields_;
 }
 
 bool Record::matchesConditions(std::string field_name,

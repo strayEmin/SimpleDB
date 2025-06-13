@@ -24,7 +24,9 @@ class Record {
 
     std::string getValue(std::string field_name) const;
 
-    std::unordered_set<std::string> getFields() const;
+    std::unordered_map<std::string, std::string> getFields() const;
+
+    std::unordered_set<std::string> getFieldNames() const;
 
     bool matchesConditions(std::string field_name, std::string value) const;
 };
