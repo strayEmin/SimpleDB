@@ -50,7 +50,8 @@ void DatabaseEngine::useDatabase(const std::string& db_name) {
 
 void DatabaseEngine::dropDatabase(const std::string& db_name) {
     try {
-        if (current_database_sptr_->getName() == db_name) {
+        if (current_database_sptr_ != nullptr and
+            current_database_sptr_->getName() == db_name) {
             current_database_sptr_ = nullptr;
         }
 
@@ -68,5 +69,3 @@ void DatabaseEngine::dropDatabase(const std::string& db_name) {
                                 "' does not exist, cannot be drop");
     }
 }
-
-QueryResult DatabaseEngine::executeQuery(const Query& query) {}
