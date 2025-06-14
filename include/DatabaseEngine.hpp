@@ -1,5 +1,8 @@
 #pragma once
 
+#include <filesystem>
+#include <memory>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 
@@ -7,17 +10,25 @@
 #include "query/QueryResult.hpp"
 #include "storage/Database.hpp"
 
+#define DB_FILE_EXTENSION ".json"
+
 class DatabaseEngine {
    private:
-    std::unordered_map<std::string, Database> databases;
-    Database current_database;
+    // key - database name, value - absolute path to database
+    std::unordered_map<std::string, std::string> database_paths_;
+    std::shared_ptr<Database> current_database_sptr_;
+    std::string db_dir_;
 
    public:
-    void createDatabase(std::string db_name);
-    void useDatabase(std::string);
-    void dropDatabase(std::string db_name);
-    QueryResult executeQuery(Query query);
+    DatabaseEngine(const std::string& path_to_db_dir);
+
+    void setDBDir(const std::string& new_db_dir);
+
+    void createDatabase(const std::string& db_name);
+
+    void useDatabase(const std::string& db_name);
+
+    void dropDatabase(const std::string& db_name);
+
+    QueryResult executeQuery(const Query& query);
 };
-
-
-void OK();
