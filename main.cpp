@@ -10,12 +10,11 @@
 #include "utils/Logger.hpp"
 
 int main() {
-    Database d("main");
-    d.loadFromFile("testbd/in.json");
+    DatabaseEngine dbe("tmp/");
 
-    d.saveToFile("testbd/out.json");
+    dbe.createDatabase("mydb");
+    dbe.createDatabase("mydb2");
 
-    d.loadFromFile("testbd/out.json");
-
-    // ошибок не обнаружено
+    dbe.useDatabase("mydb");
+    dbe.dropDatabase("mydb");
 }
