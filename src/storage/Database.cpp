@@ -4,11 +4,13 @@
 
 using nlohmann::json;
 
+std::string Database::getName() { return name_; }
+
 void Database::createTable(const std::string& table_name,
                            const std::vector<Column>& columns) {
     if (tables_.contains(table_name)) {
         throw std::invalid_argument(
-            "Database cannot contain two tables with the same name ('" +
+            "database cannot contain two tables with the same name ('" +
             table_name + "')");
     }
 
@@ -50,10 +52,14 @@ std::vector<std::shared_ptr<const Table>> Database::getTables() const {
 }
 
 void Database::saveToFile(const std::string& filename) const {
-    json j;
     std::ofstream f;
     f.open(filename);
+    if (not f.is_open()) {
+        throw std::runtime_error("failed to create database '" + name_ +
+                                 "' as file by path '" + filename + "'");
+    }
 
+    json j;
     j["name"] = name_;
     auto tables = getTables();
     j["tables"] = {};
@@ -148,13 +154,18 @@ structure of .json:
 
 void Database::loadFromFile(const std::string& filename) {
     std::ifstream f(filename);
+    if (not f.is_open()) {
+        throw std::runtime_error("error loading the database from a file '" +
+                                 filename + "'");
+    }
+
     json j = json::parse(f);
     f.close();
 
     try {
         name_ = j.at("name");
     } catch (std::out_of_range) {
-        throw std::out_of_range("File '" + filename +
+        throw std::out_of_range("file '" + filename +
                                 "' does not contain field 'name'");
     }
 

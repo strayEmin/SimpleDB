@@ -19,12 +19,15 @@ class Database {
    public:
     explicit Database(const std::string& name) : name_(name) {}
 
-    explicit Database(
-        const std::string& name,
-        std::unordered_map<std::string, const std::shared_ptr<Table>>& tables);
+    // explicit Database(
+    //     const std::string& name,
+    //     const std::unordered_map<std::string, const std::shared_ptr<Table>>&
+    //         tables);
 
-    explicit Database(const std::string& name,
-                      const std::vector<std::shared_ptr<Table>>& tables);
+    // explicit Database(const std::string& name,
+    //                   const std::vector<std::shared_ptr<Table>>& tables);
+
+    std::string getName();
 
     void createTable(const std::string& table_name,
                      const std::vector<Column>& columns);
