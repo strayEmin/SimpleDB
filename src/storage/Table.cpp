@@ -4,9 +4,16 @@ std::string Table::getName() const { return name_; }
 
 void Table::changeName(const std::string &new_name) { name_ = new_name; }
 
-std::vector<Column> Table::getColumns() const { return columns_; }
+std::vector<Column> Table::getColumns() const {
+    std::vector<Column> result;
+    for (auto &column_name : column_names_) {
+        result.push_back(columns_.at(column_name));
+    }
 
-std::vector<Record> Table::getRecords() const { return records_; }
+    return result;
+}
+
+std::list<Record> Table::getRecords() const { return records_; }
 
 std::string Table::getPrimaryKeyColumnName() const {
     if (not hasPK_) {
@@ -14,8 +21,8 @@ std::string Table::getPrimaryKeyColumnName() const {
     }
 
     for (const auto &column : columns_) {
-        if (column.isPK()) {
-            return column.getName();
+        if (column.second.isPK()) {
+            return column.second.getName();
         }
     }
 
@@ -35,16 +42,27 @@ Table::Table(std::string name, std::vector<Column> columns) : name_(name) {
     }
 }
 
-void Table::insertRecord(const Record record) {
+void Table::insertRecord(const Record &record) {
     std::unordered_set<std::string> field_names = record.getFieldNames();
 
     for (auto &fn : field_names) {
-        if (not column_names_.contains(fn)) {
+        if (not columns_.contains(fn)) {
             throw std::out_of_range("Column '" + fn + "' does not exist");
+        }
+        if (columns_.at(fn).isPK()) {
+            for (auto &r : records_) {
+                if (r.getValue(fn) == record.getValue(fn)) {
+                    throw std::invalid_argument(
+                        "such an entry already exists in the " + fn +
+                        " field, which is the primary key ('" +
+                        record.getValue(fn) + "')");
+                }
+            }
         }
     }
 
     Record final_record;
+
     for (auto &cn : column_names_) {
         if (field_names.contains(cn)) {
             final_record.setField(cn, record.getValue(cn));
@@ -56,7 +74,7 @@ void Table::insertRecord(const Record record) {
     records_.push_back(final_record);
 }
 
-void Table::deleteRecord(std::string key) {
+void Table::deleteRecord(const std::string &key) {
     std::string pk_column = getPrimaryKeyColumnName();
     for (auto it = records_.begin(); it != records_.end(); ++it) {
         if (it->getValue(pk_column) == key) {
@@ -67,7 +85,7 @@ void Table::deleteRecord(std::string key) {
     throw std::runtime_error("Record with key '" + key + "' not found");
 }
 
-Record Table::findRecord(std::string key) const {
+Record Table::findRecord(const std::string &key) const {
     std::string pk_column = getPrimaryKeyColumnName();
     for (auto &record : records_) {
         if (record.getValue(pk_column) == key) {
@@ -77,8 +95,8 @@ Record Table::findRecord(std::string key) const {
     throw std::runtime_error("Record with key '" + key + "' not found");
 }
 
-void Table::addColumn(Column column) {
-    if (column_names_.contains(column.getName())) {
+void Table::addColumn(const Column &column) {
+    if (columns_.contains(column.getName())) {
         throw std::invalid_argument("Column '" + column.getName() +
                                     "' already exists in the table");
     }
@@ -92,27 +110,38 @@ void Table::addColumn(Column column) {
         }
     }
 
-    columns_.push_back(column);
-    column_names_.insert(column.getName());
+    columns_.emplace(column.getName(), column);
+    column_names_.push_back(column.getName());
 
     for (auto &record : records_) {
         record.setDefault(column.getName());
     }
 }
 
-void Table::dropColumn(std::string column_name) {
-    if (not column_names_.contains(column_name)) {
+void Table::dropColumn(const std::string &column_name) {
+    if (not columns_.contains(column_name)) {
         throw std::invalid_argument("Column '" + column_name +
                                     "does not exist");
     }
 
-    for (auto it = columns_.begin(); it != columns_.end(); ++it) {
-        if (it->getName() == column_name) {
-            columns_.erase(it);
+    for (auto it = column_names_.begin(); it != column_names_.end(); ++it) {
+        if (*it == column_name) {
+            column_names_.erase(it);
         }
     }
+
+    columns_.erase(column_name);
 
     for (auto &record : records_) {
         record.deleteField(column_name);
     }
+}
+
+std::list<std::string> Table::getValuesInCol(const std::string column_name) {
+    std::list<std::string> result;
+    for (auto &record : records_) {
+        result.push_back(record.getValue(column_name));
+    }
+
+    return result;
 }

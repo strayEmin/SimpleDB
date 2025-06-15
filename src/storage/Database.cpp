@@ -31,8 +31,7 @@ void Database::dropTable(const std::string& table_name) {
     tables_.erase(table_name);
 }
 
-std::shared_ptr<const Table> Database::getTable(
-    const std::string& table_name) const {
+std::shared_ptr<Table> Database::getTable(const std::string& table_name) const {
     try {
         return tables_.at(table_name);
     } catch (std::out_of_range) {
@@ -76,7 +75,7 @@ void Database::saveToFile(const std::string& filename) const {
         }
 
         jtable["records"] = {};
-        std::vector<Record> records = table->getRecords();
+        std::list<Record> records = table->getRecords();
         for (auto& record : records) {
             json fields(record.getFields());
             jtable["records"].push_back(fields);

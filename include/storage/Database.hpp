@@ -36,7 +36,7 @@ class Database {
 
     void dropTable(const std::string& table_name);
 
-    std::shared_ptr<const Table> getTable(const std::string& table_name) const;
+    std::shared_ptr<Table> getTable(const std::string& table_name) const;
 
     std::vector<std::shared_ptr<const Table>> getTables() const;
 

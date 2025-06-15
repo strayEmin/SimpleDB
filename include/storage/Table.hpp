@@ -1,5 +1,7 @@
 #pragma once
 
+#include <list>
+#include <map>
 #include <memory>
 #include <string>
 #include <unordered_set>
@@ -11,9 +13,9 @@
 class Table {
    private:
     std::string name_;
-    std::vector<Column> columns_;
-    std::vector<Record> records_;
-    std::unordered_set<std::string> column_names_;
+    std::vector<std::string> column_names_;
+    std::list<Record> records_;
+    std::unordered_map<std::string, Column> columns_;
     bool hasPK_ = false;
 
    public:
@@ -25,17 +27,19 @@ class Table {
 
     std::vector<Column> getColumns() const;
 
-    std::vector<Record> getRecords() const;
+    std::list<Record> getRecords() const;
 
     std::string getPrimaryKeyColumnName() const;
 
-    void insertRecord(const Record record);
+    void insertRecord(const Record& record);
 
-    void deleteRecord(std::string key);
+    void deleteRecord(const std::string& key);
 
-    Record findRecord(std::string key) const;
+    Record findRecord(const std::string& key) const;
 
-    void addColumn(Column column);
+    void addColumn(const Column& column);
 
-    void dropColumn(std::string column_name);
+    void dropColumn(const std::string& column_name);
+
+    std::list<std::string> getValuesInCol(const std::string column_name);
 };
