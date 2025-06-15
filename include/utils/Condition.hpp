@@ -7,14 +7,14 @@
 
 class Condition {
    private:
-    std::string field_name;
-    bool (*operation)(std::string, std::string);
-    std::string value;
+    std::string field_name_;
+    bool (*operation_)(std::string, std::string);
+    std::string value_;
 
    public:
     Condition(std::string field_name,
               bool (*operation)(std::string, std::string), std::string value)
-        : field_name(field_name), operation(operation), value(value) {}
+        : field_name_(field_name), operation_(operation), value_(value) {}
 
-    bool evaluate(Record& record);
+    bool evaluate(const Record& record) const;
 };
