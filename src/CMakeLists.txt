@@ -11,6 +11,7 @@ set(SOURCES
     transaction/Transaction.cpp
     utils/Condition.cpp
     utils/Logger.cpp
+    query/SelectQueryBuilder.cpp
     DatabaseEngine.cpp
 )
 
