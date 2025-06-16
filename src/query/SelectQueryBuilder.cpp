@@ -22,13 +22,16 @@ SelectQueryBuilder::SelectQueryBuilder(
 SelectQueryBuilder& SelectQueryBuilder::where(
     const std::vector<Condition>& conditions) {
     for (auto it = records_.begin(); it != records_.end();) {
+        bool is_deleted{false};
         for (auto& condition : conditions) {
             if (not condition.evaluate(*it)) {
                 it = records_.erase(it);
+                is_deleted = true;
                 break;
-            } else {
-                ++it;
             }
+        }
+        if (not is_deleted) {
+            ++it;
         }
     }
 
