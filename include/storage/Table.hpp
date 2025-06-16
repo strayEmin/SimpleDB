@@ -9,6 +9,7 @@
 
 #include "Column.hpp"
 #include "Record.hpp"
+#include "utils/Condition.hpp"
 
 class Table {
    private:
@@ -44,4 +45,10 @@ class Table {
     void dropColumn(const std::string& column_name);
 
     std::list<std::string> getValuesInCol(const std::string column_name);
+
+    void deleteRecords(const std::vector<Condition>& conditions = {});
+
+    void updateRecords(
+        const std::unordered_map<std::string, std::string>& fieldvalues,
+        std::vector<Condition> conditions = {});
 };

@@ -1,5 +1,14 @@
 #include "storage/Table.hpp"
 
+bool isAcceptableType(TypeClassifier::GeneralType col_type,
+                      TypeClassifier::GeneralType val_type) {
+    using Type = TypeClassifier::GeneralType;
+    return col_type == Type::DATE_OR_TIME and val_type == Type::DATE_OR_TIME or
+           col_type == Type::TEXT and
+               (val_type == Type::TEXT or val_type == Type::DATE_OR_TIME) or
+           col_type == Type::NUMERIC and val_type == Type::NUMERIC;
+}
+
 std::string Table::getName() const { return name_; }
 
 void Table::changeName(const std::string &new_name) { name_ = new_name; }
@@ -65,6 +74,17 @@ void Table::insertRecord(const Record &record) {
 
     for (auto &cn : column_names_) {
         if (field_names.contains(cn)) {
+            using Type = TypeClassifier::GeneralType;
+
+            Type col_type = columns_.at(cn).getGeneralType();
+            Type val_type =
+                TypeClassifier::parseEnteredValueType(record.getValue(cn));
+
+            if (not isAcceptableType(col_type, val_type)) {
+                throw std::invalid_argument(
+                    "incorrect type of the entered value (" +
+                    record.getValue(cn) + ")");
+            }
             final_record.setField(cn, record.getValue(cn));
         } else {
             final_record.setDefault(cn);
@@ -155,4 +175,56 @@ std::vector<std::string> Table::getColumnNames() const {
     }
 
     return result;
+}
+
+void Table::deleteRecords(const std::vector<Condition> &conditions) {
+    if (conditions.empty()) {
+        records_.clear();
+    } else {
+        for (auto it = records_.begin(); it != records_.end();) {
+            bool is_deleted{false};
+            for (auto &condition : conditions) {
+                if (condition.evaluate(*it)) {
+                    it = records_.erase(it);
+                    is_deleted = true;
+                    break;
+                }
+            }
+            if (not is_deleted) {
+                ++it;
+            }
+        }
+    }
+}
+
+void Table::updateRecords(
+    const std::unordered_map<std::string, std::string> &fieldvalues,
+    std::vector<Condition> conditions) {
+    if (fieldvalues.empty()) {
+        throw std::invalid_argument("'fieldvalue' is empty, nothing to update");
+    }
+    if (conditions.empty()) {
+        auto first_pair = *fieldvalues.begin();
+        conditions.push_back(Condition(
+            first_pair.first, [](std::string, std::string) { return true; },
+            first_pair.second));
+    }
+
+    for (auto it = records_.begin(); it != records_.end(); ++it) {
+        for (auto &condition : conditions) {
+            if (condition.evaluate(*it)) {
+                for (auto &fv : fieldvalues) {
+                    using Type = TypeClassifier::GeneralType;
+
+                    Type col_type = columns_.at(fv.first).getGeneralType();
+                    Type val_type =
+                        TypeClassifier::parseEnteredValueType(fv.second);
+
+                    if (isAcceptableType(col_type, val_type)) {
+                        it->setField(fv.first, fv.second);
+                    }
+                }
+            }
+        }
+    }
 }
