@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -17,8 +18,7 @@
 class SelectQueryBuilder {
    private:
     std::list<Record> records_;
-    const Table& table_;
-    const std::vector<std::string>& column_names_;
+    std::vector<std::string> column_names_;
 
    public:
     explicit SelectQueryBuilder(const Table& table,
@@ -28,7 +28,7 @@ class SelectQueryBuilder {
 
     SelectQueryBuilder& distinct();
 
-    SelectQueryBuilder& limit(int limit_hight, int limit_low = 0);
+    SelectQueryBuilder& limit(int limit, int offset = 0);
 
     std::list<Record> getRecords();
 };
