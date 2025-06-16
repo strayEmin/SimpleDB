@@ -122,9 +122,9 @@ void DatabaseEngine::createTable(const Table& table, bool if_not_exist) {
     }
 }
 
-void DatabaseEngine::createTable(std::string table_name,
-                                 std::vector<Column> columns,
-                                 bool if_not_exist) {
+void DatabaseEngine::createTable(const std::string& table_name,
+                                 const std::vector<Column>& columns,
+                                 const bool if_not_exist) {
     try {
         current_database_sptr_->createTable(table_name, columns);
         saveChangesCurDB();
@@ -140,8 +140,8 @@ std::string DatabaseEngine::max(const std::string& table_name,
                                 std::string (*max_s)(std::string,
                                                      std::string)) const {
     const auto& table = current_database_sptr_->getTable(table_name);
-    std::string max_value;
     std::list<std::string> values = table->getValuesInCol(column_name);
+    std::string max_value{values.front()};
     for (auto& v : values) {
         max_value = max_s(max_value, v);
     }
@@ -152,4 +152,22 @@ std::string DatabaseEngine::max(const std::string& table_name,
 std::vector<Column> DatabaseEngine::getColumns(
     const std::string& table_name) const {
     return current_database_sptr_->getTable(table_name)->getColumns();
+}
+
+void DatabaseEngine::deleteFrom(const std::string& table_name,
+                                std::vector<Condition> conditions) {
+    current_database_sptr_->getTable(table_name)->deleteRecords(conditions);
+}
+
+void DatabaseEngine::update(
+    const std::string& table_name,
+    const std::unordered_map<std::string, std::string>& fieldvalues,
+    const std::vector<Condition>& conditions) {
+    current_database_sptr_->getTable(table_name)
+        ->updateRecords(fieldvalues, conditions);
+}
+
+AlterTableQueryBuilder DatabaseEngine::alterTable(
+    const std::string& table_name) {
+    return AlterTableQueryBuilder{current_database_sptr_->getTable(table_name)};
 }

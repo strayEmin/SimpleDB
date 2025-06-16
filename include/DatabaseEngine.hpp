@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 
+#include "query/AlterTableQueryBuilder.hpp"
 #include "query/Query.hpp"
 #include "query/QueryResult.hpp"
 #include "query/SelectQueryBuilder.hpp"
@@ -52,14 +53,20 @@ class DatabaseEngine {
                     const std::string& column_name,
                     std::string (*max_s)(std::string, std::string)) const;
 
-    void update(std::string table_name,
-                std::unordered_map<std::string, std::string> fieldvalues,
-                std::vector<Condition> conditions = {});
+    void update(const std::string& table_name,
+                const std::unordered_map<std::string, std::string>& fieldvalues,
+                const std::vector<Condition>& conditions = {});
 
     void createTable(const Table& table, bool if_not_exist = false);
 
-    void createTable(std::string table_name, std::vector<Column> columns,
-                     bool if_not_exist = false);
+    void createTable(const std::string& table_name,
+                     const std::vector<Column>& columns,
+                     const bool if_not_exist = false);
 
     std::vector<Column> getColumns(const std::string& table_name) const;
+
+    void deleteFrom(const std::string& table_name,
+                    std::vector<Condition> conditions = {});
+
+    AlterTableQueryBuilder alterTable(const std::string& table_name);
 };
