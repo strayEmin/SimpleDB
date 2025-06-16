@@ -50,7 +50,7 @@ class DatabaseEngine {
 
     std::string max(const std::string& table_name,
                     const std::string& column_name,
-                    std::string (*max_s)(std::string, std::string));
+                    std::string (*max_s)(std::string, std::string)) const;
 
     void update(std::string table_name,
                 std::unordered_map<std::string, std::string> fieldvalues,
@@ -60,4 +60,6 @@ class DatabaseEngine {
 
     void createTable(std::string table_name, std::vector<Column> columns,
                      bool if_not_exist = false);
+
+    std::vector<Column> getColumns(const std::string& table_name) const;
 };

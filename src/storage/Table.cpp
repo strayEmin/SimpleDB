@@ -5,7 +5,7 @@ std::string Table::getName() const { return name_; }
 void Table::changeName(const std::string &new_name) { name_ = new_name; }
 
 std::vector<Column> Table::getColumns() const {
-    std::vector<Column> result;
+    std::vector<Column> result{};
     for (auto &column_name : column_names_) {
         result.push_back(columns_.at(column_name));
     }
@@ -78,7 +78,7 @@ void Table::deleteRecord(const std::string &key) {
     std::string pk_column = getPrimaryKeyColumnName();
     for (auto it = records_.begin(); it != records_.end(); ++it) {
         if (it->getValue(pk_column) == key) {
-            records_.erase(it);
+            it = records_.erase(it);
             return;
         }
     }
@@ -124,9 +124,11 @@ void Table::dropColumn(const std::string &column_name) {
                                     "does not exist");
     }
 
-    for (auto it = column_names_.begin(); it != column_names_.end(); ++it) {
+    for (auto it = column_names_.begin(); it != column_names_.end();) {
         if (*it == column_name) {
-            column_names_.erase(it);
+            it = column_names_.erase(it);
+        } else {
+            ++it;
         }
     }
 
@@ -138,9 +140,18 @@ void Table::dropColumn(const std::string &column_name) {
 }
 
 std::list<std::string> Table::getValuesInCol(const std::string column_name) {
-    std::list<std::string> result;
+    std::list<std::string> result{};
     for (auto &record : records_) {
         result.push_back(record.getValue(column_name));
+    }
+
+    return result;
+}
+
+std::vector<std::string> Table::getColumnNames() const {
+    std::vector<std::string> result{};
+    for (auto &cn : column_names_) {
+        result.push_back(cn);
     }
 
     return result;

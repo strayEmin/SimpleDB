@@ -138,7 +138,7 @@ void DatabaseEngine::createTable(std::string table_name,
 std::string DatabaseEngine::max(const std::string& table_name,
                                 const std::string& column_name,
                                 std::string (*max_s)(std::string,
-                                                     std::string)) {
+                                                     std::string)) const {
     const auto& table = current_database_sptr_->getTable(table_name);
     std::string max_value;
     std::list<std::string> values = table->getValuesInCol(column_name);
@@ -147,4 +147,9 @@ std::string DatabaseEngine::max(const std::string& table_name,
     }
 
     return max_value;
+}
+
+std::vector<Column> DatabaseEngine::getColumns(
+    const std::string& table_name) const {
+    return current_database_sptr_->getTable(table_name)->getColumns();
 }

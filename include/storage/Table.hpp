@@ -27,6 +27,8 @@ class Table {
 
     std::vector<Column> getColumns() const;
 
+    std::vector<std::string> getColumnNames() const;
+
     std::list<Record> getRecords() const;
 
     std::string getPrimaryKeyColumnName() const;
