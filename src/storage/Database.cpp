@@ -70,12 +70,12 @@ void Database::saveToFile(const std::string& filename) const {
         jtable["columns"] = {};
         for (auto& column : columns) {
             jtable["columns"].push_back({{"name", column.getName()},
-                                         {"type", column.getType()},
+                                         {"type", column.getSpecificType()},
                                          {"is_primary_key", column.isPK()}});
         }
 
         jtable["records"] = {};
-        std::list<Record> records = table->getRecords();
+        const auto& records = table->getRecords();
         for (auto& record : records) {
             json fields(record.getFields());
             jtable["records"].push_back(fields);
