@@ -12,7 +12,8 @@ class Column {
     bool is_primary_key_;
 
    public:
-    explicit Column(std::string name, std::string type, bool is_primary_key)
+    explicit Column(const std::string& name, const std::string& type,
+                    bool is_primary_key)
         : name_(name),
           specific_type_(type),
           is_primary_key_(is_primary_key),
@@ -25,5 +26,4 @@ class Column {
     bool isPK() const;
 
     TypeClassifier::GeneralType getGeneralType() const;
-    
 };

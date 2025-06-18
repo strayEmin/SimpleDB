@@ -16,17 +16,19 @@ class Record {
     Record(std::unordered_map<std::string, std::string> &fields)
         : fields_(fields) {}
 
-    void setField(std::string field_name, std::string value);
+    void setField(const std::string &field_name, const std::string &value);
 
-    void deleteField(std::string field_name);
+    void deleteField(const std::string &field_name);
 
-    void setDefault(std::string field_name, std::string default_value = "NULL");
+    void setDefault(const std::string &field_name,
+                    const std::string &default_value = "NULL");
 
-    std::string getValue(std::string field_name) const;
+    std::string getValue(const std::string &field_name) const;
 
     std::unordered_map<std::string, std::string> getFields() const;
 
     std::unordered_set<std::string> getFieldNames() const;
 
-    bool matchesConditions(std::string field_name, std::string value) const;
+    bool matchesConditions(const std::string &field_name,
+                           const std::string &value) const;
 };

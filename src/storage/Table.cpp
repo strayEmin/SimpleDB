@@ -70,7 +70,7 @@ void Table::insertRecord(const Record &record) {
         }
     }
 
-    Record final_record;
+    Record final_record{};
 
     for (auto &cn : column_names_) {
         if (field_names.contains(cn)) {
@@ -102,6 +102,7 @@ void Table::deleteRecord(const std::string &key) {
             return;
         }
     }
+
     throw std::runtime_error("Record with key '" + key + "' not found");
 }
 
@@ -112,6 +113,7 @@ Record Table::findRecord(const std::string &key) const {
             return record;
         }
     }
+
     throw std::runtime_error("Record with key '" + key + "' not found");
 }
 
@@ -190,6 +192,7 @@ void Table::deleteRecords(const std::vector<Condition> &conditions) {
                     break;
                 }
             }
+
             if (not is_deleted) {
                 ++it;
             }
@@ -200,9 +203,10 @@ void Table::deleteRecords(const std::vector<Condition> &conditions) {
 void Table::updateRecords(
     const std::unordered_map<std::string, std::string> &fieldvalues,
     std::vector<Condition> conditions) {
-    if (fieldvalues.empty()) {
+        if (fieldvalues.empty()) {
         throw std::invalid_argument("'fieldvalue' is empty, nothing to update");
     }
+
     if (conditions.empty()) {
         auto first_pair = *fieldvalues.begin();
         conditions.push_back(Condition(

@@ -58,7 +58,7 @@ void Database::saveToFile(const std::string& filename) const {
                                  "' as file by path '" + filename + "'");
     }
 
-    json j;
+    json j{};
     j["name"] = name_;
     auto tables = getTables();
     j["tables"] = {};
@@ -169,7 +169,7 @@ void Database::loadFromFile(const std::string& filename) {
     }
 
     for (auto& jtable : j.at("tables")) {
-        std::vector<Column> columns;
+        std::vector<Column> columns{};
         for (auto& jcolumn : jtable.at("columns")) {
             columns.push_back(Column(jcolumn.at("name"), jcolumn.at("type"),
                                      jcolumn.at("is_primary_key")));
@@ -177,10 +177,11 @@ void Database::loadFromFile(const std::string& filename) {
 
         Table table(jtable.at("name"), columns);
         for (auto& jrecord : jtable.at("records")) {
-            Record record;
+            Record record{};
             for (auto& column : columns) {
                 record.setField(column.getName(), jrecord.at(column.getName()));
             }
+
             table.insertRecord(record);
         }
 

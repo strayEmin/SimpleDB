@@ -1,11 +1,15 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "../utils/Condition.hpp"
 
+/*
+The class that is planned to be used for processing text queries to the database
+has not yet been implemented.
+*/
 class Query {
    private:
     enum Type { SELECT, INSERT, UPDATE, DELETE, CREATE_TABLE, DROP_TABLE };

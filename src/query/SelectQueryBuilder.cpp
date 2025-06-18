@@ -3,13 +3,15 @@
 SelectQueryBuilder::SelectQueryBuilder(
     const Table& table, const std::vector<std::string>& column_names) {
     const auto& records = table.getRecords();
+
     if (column_names.size() == 1 and column_names[0] == "*") {
         column_names_ = table.getColumnNames();
+
         records_ = records;
     } else {
         column_names_ = column_names;
         for (auto& record : records) {
-            Record subrecord;
+            Record subrecord{};
             for (auto& cn : column_names) {
                 subrecord.setField(cn, record.getValue(cn));
             }
@@ -66,6 +68,7 @@ SelectQueryBuilder& SelectQueryBuilder::limit(int limit, int offset) {
         } else {
             ++it;
         }
+
         ++cur_i;
     }
 

@@ -23,9 +23,11 @@ class DatabaseEngine {
     std::unordered_map<std::string, std::string> database_paths_;
     std::shared_ptr<Database> current_database_sptr_;
     std::string db_dir_;
+    std::string path_to_logfile_;
 
    public:
-    DatabaseEngine(const std::string& path_to_db_dir);
+    DatabaseEngine(const std::string& path_to_db_dir,
+                   const std::string& path_to_logfile = "app.log");
 
     ~DatabaseEngine();
 

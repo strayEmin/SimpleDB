@@ -4,10 +4,13 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Record.hpp"
 #include "Index.hpp"
+#include "Record.hpp"
 
-
+/*
+The class that is planned as part of the indexing implementation has not yet
+been implemented.
+*/
 class IndexManager {
    private:
     std::unordered_map<std::string, std::unique_ptr<Index>> indexes_;
